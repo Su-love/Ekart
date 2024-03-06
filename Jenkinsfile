@@ -28,6 +28,7 @@ pipeline{
       steps{
         withSonarQubeEnv('sonar') {
           sh "${SONARQUBE_HOME}/bin/sonar-scanner"
+        }
       }
     }
        stage("Quality Gate"){
