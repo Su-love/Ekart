@@ -24,13 +24,15 @@ pipeline{
         sh 'mvn test -DskipTests=true'
       }
     }
-    stage('Sonar analysis'){
-      steps{
-        withSonarQubeEnv('sonar') {
-          sh "${SONARQUBE_HOME}/bin/sonar-scanner"
-        }
-      }
-    }
+        stage("SonarQube Analysis"){
+           steps {
+	           script {
+		        withSonarQubeEnv(credentialsId: 'sonar-jenkins') { 
+                        sh "mvn sonar:sonar"
+		        }
+	           }	
+           }
+       }
        stage("Quality Gate"){
            steps {
                script {
