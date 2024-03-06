@@ -9,20 +9,35 @@ pipeline{
   }
   
   stages{
-    steps('git checkout'){
-      git branch: 'main', changelog: false, poll: false, url: 'https://github.com/Su-love/Ekart'
+    stage('git checkout'){
+      steps{
+        git branch: 'main', changelog: false, poll: false, url: 'https://github.com/Su-love/Ekart'
+      }
     }
-    steps('code compile'){
-      sh 'mvn compile'
+    stage('code compile'){
+      steps{
+        sh 'mvn compile'
+      }
     }
-    steps('unit test'){
-      sh 'mvn test -DskipTests=true'
+    stage('unit test'){
+      steps{
+        sh 'mvn test -DskipTests=true'
+      }
     }
-    steps('Sonar analysis'){
-      withSonarQubeEnv('sonar') {
-        sh "${SONARQUBE_HOME}/bin/sonar-scanner"
-      
+    stage('Sonar analysis'){
+      steps{
+        withSonarQubeEnv('sonar') {
+          sh "${SONARQUBE_HOME}/bin/sonar-scanner"
+      }
     }
+       stage("Quality Gate"){
+           steps {
+               script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-jenkins'
+                }	
+            }
+
+        }
     }
   }
 }
