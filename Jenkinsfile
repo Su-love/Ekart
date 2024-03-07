@@ -79,7 +79,7 @@ pipeline{
             steps {
                 script {
                     docker.withRegistry('',DOCKER_PASS) {
-                        docker_image = docker.build("${IMAGE_NAME}", "-f docker/Dockerfile .")
+	                        docker_image = docker.build("${IMAGE_NAME}:${IMAGE_TAG}", "-f docker/Dockerfile .")
                     }  
 		}
 	    }
