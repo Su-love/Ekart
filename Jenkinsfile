@@ -6,8 +6,8 @@ pipeline{
   }            
   environment {
     SONARQUBE_HOME = tool 'sonar-scanner'
-    App_name = "ecart"
-    Release = "1.0.0"
+    APP_NAME = "ecart"
+    RELEASE = "1.0.0"
     DOCKER_USER = "sulove"
     DOCKER_PASS = 'docker-login'
     IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
