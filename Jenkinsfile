@@ -6,6 +6,8 @@ pipeline{
   }            
   environment {
     SONARQUBE_HOME = tool 'sonar-scanner'
+    App-name = ecart
+    Release = 1.0.0
   }
   
   stages{
@@ -57,10 +59,19 @@ pipeline{
        stage("deploy to nexus"){
            steps {
                     withMaven(globalMavenSettingsConfig: 'nexus-repo', jdk: 'java17', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
-                   sh 'mvn deploy -DskipTests=true -e'
+                   sh 'mvn deploy -DskipTests=true'
 		}
               }	
          }
+       stage("docker build"){
+           steps {
+		   scripts{
+                    	withDockerRegistry(credentialsId: 'docker-login', url: 'https://hub.docker.com/repositories/sulove') {
+    			sh 'docker build -t $App-name-$Release-$build -f 
+		}
+              }
+	   }
+       }  
     }
 }
   
