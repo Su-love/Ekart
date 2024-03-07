@@ -39,8 +39,28 @@ pipeline{
                     waitForQualityGate abortPipeline: false, credentialsId: 'sonar-jenkins'
                 }	
             }
-
-        }
+       }
+       stage('owsap dependency check'){
+          steps{
+            script {
+		    dependencyCheck additionalArguments: '--scan ./', odcInstallation: 'DC'
+		    dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+	   	 }
+		    
+      	   }
+	}
+       stage("Build-artificat"){
+           steps {
+                    sh 'mvn clean -DskipTests=true'
+            }
+       }
+       stage("deploy to nexus"){
+           steps {
+                    withMaven(globalMavenSettingsConfig: 'nexus-repo', jdk: 'java17', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
+                   sh 'mvn deploy -DskipTests=true'
+		}
+              }	
+         }
     }
 }
   
