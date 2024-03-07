@@ -64,7 +64,7 @@ pipeline{
 	}
        stage("Build-artificat"){
            steps {
-                    sh 'mvn clean -DskipTests=true'
+                    sh 'mvn clean package -DskipTests=true'
             }
        }
        
