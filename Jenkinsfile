@@ -6,7 +6,7 @@ pipeline{
   }            
   environment {
     SONARQUBE_HOME = tool 'sonar-scanner'
-    App-name = ecart
+    App-name = "ecart"
     Release = "1.0.0"
   }
   
