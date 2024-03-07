@@ -67,22 +67,7 @@ pipeline{
                     sh 'mvn clean -DskipTests=true'
             }
        }
-       stage('Delete Snapshots') {
-            steps {
-                script {
-			def snapshots = sh(
-                        script: "curl -s '${NEXUS_URL}/service/rest/v1/search/assets?repository=${REPOSITORY_ID}&format=maven2&maven.snapshot=true'",
-                        returnStdout: true
-                    ).trim()
-
-                    // Iterate through each snapshot and delete it
-                    snapshots.readLines().each { snapshot ->
-                        sh "curl -X DELETE '${NEXUS_URL}/service/rest/v1/components/${snapshot}'"
-                    
-                    }
-                }
-            }
-       }
+       
        stage("deploy to nexus"){
            steps {
                     withMaven(globalMavenSettingsConfig: 'nexus-repo', jdk: 'java17', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
