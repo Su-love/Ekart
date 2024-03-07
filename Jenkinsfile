@@ -8,6 +8,10 @@ pipeline{
     SONARQUBE_HOME = tool 'sonar-scanner'
     App_name = "ecart"
     Release = "1.0.0"
+    DOCKER_USER = "sulove"
+    DOCKER_PASS = 'docker-login'
+    IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
+    IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
   }
   
   stages{
@@ -63,15 +67,15 @@ pipeline{
 		}
               }	
          }
-       stage("docker build"){
-           steps {
-		   scripts{
-                    	withDockerRegistry(credentialsId: 'docker-login', url: 'https://hub.docker.com/repositories/sulove') {
-    			sh "docker build -t sulove/ecart:latest -f docker/Dockerfile ."
+        stage("Build & Push Docker Image") {
+            steps {
+                script {
+                    docker.withRegistry('',DOCKER_PASS) {
+                        docker_image = docker.build "${IMAGE_NAME}"
+                    }  
 		}
-              }
-	   }
-       }  
+	    }
+	}
     }
 }
   
