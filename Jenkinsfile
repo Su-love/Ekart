@@ -12,6 +12,8 @@ pipeline{
     DOCKER_PASS = 'docker-login'
     IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
     IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
+    NEXUS_URL = "http://192.168.95.5:8081/"
+    REPOSITORY_ID = "maven-snapshots"
   }
   
   stages{
@@ -63,6 +65,22 @@ pipeline{
        stage("Build-artificat"){
            steps {
                     sh 'mvn clean -DskipTests=true'
+            }
+       }
+       stage('Delete Snapshots') {
+            steps {
+                script {
+			def snapshots = sh(
+                        script: "curl -s '${NEXUS_URL}/service/rest/v1/search/assets?repository=${REPOSITORY_ID}&format=maven2&maven.snapshot=true'",
+                        returnStdout: true
+                    ).trim()
+
+                    // Iterate through each snapshot and delete it
+                    snapshots.readLines().each { snapshot ->
+                        sh "curl -X DELETE '${NEXUS_URL}/service/rest/v1/components/${snapshot}'"
+                    
+                    }
+                }
             }
        }
        stage("deploy to nexus"){
