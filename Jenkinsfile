@@ -67,7 +67,7 @@ pipeline{
            steps {
 		   scripts{
                     	withDockerRegistry(credentialsId: 'docker-login', url: 'https://hub.docker.com/repositories/sulove') {
-    			sh "docker build -t sulove/"${App_name}":"${Release}-${BUILD_NUMBER}" -f docker/Dockerfile ."
+    			sh "docker build -t sulove/${App_name}:${Release}-${BUILD_NUMBER} -f docker/Dockerfile ."
 		}
               }
 	   }
